@@ -1,0 +1,15 @@
+
+# dependencies
+server/node_modules/
+client/node_modules/
+
+
+# # production
+# /frontend/build
+
+# misc
+/server/config/config.env
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
