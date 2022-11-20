@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Excursions = sequelize.define("Excursions", {
+    const HotelBookings = sequelize.define("HotelBookings", {
       id: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -7,45 +7,45 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      excursions: {
-        type: DataTypes.STRING,
+      peoples: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           notEmpty: true,
         },
       },
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      descriptions: {
-        type: DataTypes.TEXT,
+      price: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           notEmpty: true,
         },
       },
       place: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      rooms: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      hotelName: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         validate: {
           notEmpty: true,
         },
       },
     });
-  
-    Excursions.associate = (models) => {
-      Excursions.hasMany(models.ExcursionDetails, {
-        onDelete: "cascade",
-      });
-      Excursions.hasMany(models.ExcursionBookings, {
-        onDelete: "cascade",
-      });
-    };
-  
-    return Excursions;
+    // HotelBookings.associate = (models) => {
+    //   HotelBookings.hasMany(models.Hotels);
+    // };
+
+    return HotelBookings;
   };
-  

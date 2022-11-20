@@ -1,6 +1,5 @@
-
 module.exports = (sequelize, DataTypes) => {
-    const Hotels = sequelize.define("Hotels", {
+    const Users = sequelize.define("Users", {
     id: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -15,15 +14,8 @@ module.exports = (sequelize, DataTypes) => {
             notEmpty: true
         }
     },
-    stars: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
-    },
-    description: {
-        type: DataTypes.TEXT,
+    email: {
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             notEmpty: true
@@ -36,21 +28,21 @@ module.exports = (sequelize, DataTypes) => {
             notEmpty: true
         }
     },
-    email: {
+    password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
             notEmpty: true
         }
     },
-    address: {
-        type: DataTypes.TEXT,
+    nationality: {
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             notEmpty: true
         }
     },
-    hotelPriceTableName: {
+    role: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -58,9 +50,17 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     })
-    Hotels.associate = (models) => {
-      Hotels.hasMany(models.HotelBookings);
-    };
-
-    return Hotels
+  
+    Users.associate = (models) => {
+      Users.hasMany(models.TransferBookings, {
+          onDelete: "cascade",
+      })
+      Users.hasMany(models.ExcursionBookings, {
+          onDelete: "cascade",
+      })
+      Users.hasMany(models.HotelBookings, {
+          onDelete: "cascade",
+      })
+  }
+    return Users
   }

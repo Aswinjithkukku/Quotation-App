@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       defaultValue: DataTypes.UUIDV4,
     },
-    country: {
+ 
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

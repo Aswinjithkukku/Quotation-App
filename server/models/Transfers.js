@@ -28,8 +28,10 @@ module.exports = (sequelize, DataTypes) => {
             notEmpty: true
         }
     },
-
     })
+    Transfers.associate = (models) => {
+      Transfers.hasMany(models.TransferBookings);
+    };
 
     return Transfers
   }

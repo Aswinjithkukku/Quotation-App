@@ -15,10 +15,12 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 // import all routes
+const locationRouter = require("./routes/locationRouter.js")
 const hotelRouter = require("./routes/hotelRouter.js")
 const transferRouter = require("./routes/transferRouter.js")
 const excursionRouter = require("./routes/excursionRouter.js")
 
+app.use('/api/location', locationRouter)
 app.use('/api/hotels', hotelRouter)
 app.use('/api/transfer', transferRouter)
 app.use('/api/excursion', excursionRouter)
