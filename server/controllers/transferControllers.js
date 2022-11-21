@@ -6,7 +6,7 @@ const { Airports, Country, Place, Transfers, TransferBookings, Quotation } = req
 exports.createAirports = catchAsyncErrors( async (req,res,next) => {
     const { iata, name, country } = req.body
 
-    const { id } = await Country.findOne({ where: { country: country } })
+    const { id } = await Country.findOne({ where: { name: country } })
 
     const airports = await Airports.create({
         iata,
@@ -70,21 +70,24 @@ exports.createTransfers = catchAsyncErrors( async(req,res,next) => {
 })
 // transfer for user => /api/transfers/
 exports.transfer = catchAsyncErrors( async(req,res,next) => {
-    const { airportIata, placeName } = req.body
+    // const { airportIata, placeName } = req.body
 
-    const airport = await Airports.findOne({ where: { iata: airportIata } }) 
-    const place = await Place.findOne({ where: { place: placeName } }) 
+    // const airport = await Airports.findOne({ where: { iata: airportIata } }) 
+    // const place = await Place.findOne({ where: { place: placeName } }) 
 
-    const transfer = await Transfers.findOne({
-        where: {
-            AirportId: airport.id,
-            PlaceId: place.id
-        }
-    })
+    // const transfer = await Transfers.findOne({
+    //     where: {
+    //         AirportId: airport.id,
+    //         PlaceId: place.id
+    //     }
+    // })
+    const airport = await Airports.findAll() 
+    const place = await Place.findAll() 
 
     res.status(201).json({
         success: true,
-        transfer
+        airport,
+        place
     })
 })
 
@@ -141,14 +144,33 @@ exports.transferBooking = catchAsyncErrors( async(req,res,next) => {
         UserId: req.user.id
     })
 
-    // const quotation = await Quotation.create({
-    //     TransferBookingId: booking.id,
-    //     HotelBookingId:null,
+    const data = {
+        TransferBookingId: booking.id,
+        HotelBookingId:null,
+        ExcursionId: null
+    }
 
-    // })
-
-    res.status(200).json({
+    let { quotationPayload } = req.cookies
+    // condition
+    if( !quotationPayload ) {
+        var quotation = await Quotation.create(data)
+    
+    } else {
+        const { quotationPayload } = req.cookies
+        console.log(quotationPayload.id);
+        var quotation = await Quotation.update(data,{ where: { id: quotationPayload.id} } )
+    }
+    // option for cookie
+    const options = {
+        expires: new Date(
+            Date.now() + process.env.COOKIE_EXPIRES_TIME_CART * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true
+    }
+    // responses
+    res.status(200).cookie('quotationPayload', quotation, options).json({
         success: true,
-        booking
+        booking,
+        quotation
     })
 })
