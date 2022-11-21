@@ -15,7 +15,7 @@ dotenv.config({ path: "config/config.env" })
 
 
 // connection to database
-db.sequelize.sync({ force: true}).then(() => {
+db.sequelize.authenticate().then(() => {
     // connecting to app server
     app.listen(process.env.PORT || 4000, () => {
         console.log(`Server started on port : ${process.env.PORT}`);

@@ -1,5 +1,5 @@
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors.js")
-const { Airports, Country, Place, Transfers } = require('../models')
+const { Airports, Country, Place, Transfers, TransferBookings, Quotation } = require('../models')
 
 
 // create airports for super admins => /api/transfer/admin/airports/create
@@ -122,5 +122,33 @@ exports.enquiry =  catchAsyncErrors( async(req,res,next) => {
         success: true,
         transfer,
         amountPerPerson: amount
+    })
+})
+
+// transfer booking for user => /api/transfer/booking/:id
+exports.transferBooking = catchAsyncErrors( async(req,res,next) => {
+    const { peoples, price, place, transferStatus, returnStatus } = req.body
+
+    const params = req.params.id
+
+    const booking = await TransferBookings.create({
+        peoples,
+        price,
+        place,
+        transferStatus,
+        returnStatus,
+        TransferId: params,
+        UserId: req.user.id
+    })
+
+    // const quotation = await Quotation.create({
+    //     TransferBookingId: booking.id,
+    //     HotelBookingId:null,
+
+    // })
+
+    res.status(200).json({
+        success: true,
+        booking
     })
 })

@@ -1,12 +1,32 @@
-const express = require("express")
-const router = express.Router()
-const { createCountry, createPlace, getCountries, getPlaces, updateCountry, updatePlace } = require("../controllers/locationControllers")
+const express = require("express");
+const router = express.Router();
+const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
+const {
+  createCountry,
+  createPlace,
+  getCountries,
+  getPlaces,
+  updateCountry,
+  updatePlace,
+} = require("../controllers/locationControllers");
 
-router.route("/admin/country/create").post(createCountry)
-router.route("/admin/place/create").post(createPlace)
-router.route("/admin/country").get(getCountries)
-router.route("/admin/place").get(getPlaces)
-router.route("/admin/country/update/:id").put(updateCountry)
-router.route("/admin/place/update/:id").put(updatePlace)
+router
+  .route("/admin/country/create")
+  .post(isAuthenticatedUser, authorizeRoles("admin"), createCountry);
+router
+  .route("/admin/place/create")
+  .post(isAuthenticatedUser, authorizeRoles("admin"), createPlace);
+router
+  .route("/admin/country")
+  .get(isAuthenticatedUser, authorizeRoles("admin"), getCountries);
+router
+  .route("/admin/place")
+  .get(isAuthenticatedUser, authorizeRoles("admin"), getPlaces);
+router
+  .route("/admin/country/update/:id")
+  .put(isAuthenticatedUser, authorizeRoles("admin"), updateCountry);
+router
+  .route("/admin/place/update/:id")
+  .put(isAuthenticatedUser, authorizeRoles("admin"), updatePlace);
 
-module.exports = router
+module.exports = router;

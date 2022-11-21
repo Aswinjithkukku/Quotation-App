@@ -42,14 +42,10 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
         },
       },
-      place: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
     });
+    TransferBookings.associate = (models) => {
+      TransferBookings.hasOne(models.Quotation);
+    };
 
     return TransferBookings;
   };

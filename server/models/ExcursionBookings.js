@@ -43,9 +43,9 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     });
-    // ExcursionBookings.associate = (models) => {
-    //   ExcursionBookings.hasMany(models.Hotels);
-    // };
+    ExcursionBookings.associate = (models) => {
+      ExcursionBookings.hasOne(models.Quotation);
+    };
 
     return ExcursionBookings;
   };
