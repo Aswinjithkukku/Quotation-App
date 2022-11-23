@@ -1,6 +1,7 @@
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors.js")
-const { Hotels, HotelDetails,Place,Airports } = require("../models")
-const dayDifference = require('../utils/dayDifference.js')
+const { Hotels, HotelPriceDetails,Place,Airports } = require("../models")
+// const dayDifference = require('../utils/dayDifference.js')
+const dateRange = require('../utils/setDates.js')
 
 
 //for super admin => /api/hotels/admin/all
@@ -14,10 +15,11 @@ exports.getHotels = catchAsyncErrors(async (req,res,next) => {
     })
 })
 
+
 // for super admin => /api/hotels/admin/create
 exports.createHotel = catchAsyncErrors (async(req,res,next) => {
 
-    const { place, name, description, phone, email, address, hotel_type } = req.body.hotel
+    const { place, name, description, phone, email, address, stars } = req.body.hotel
 
     const placeName = await Place.findOne({ where: {place: place}})
 
@@ -27,29 +29,21 @@ exports.createHotel = catchAsyncErrors (async(req,res,next) => {
         phone,
         email,
         address,
-        hotel_type,
+        stars,
         PlaceId: placeName.id,
         CountryId: placeName.CountryId
     })
-    const { fromDate, toDate, checkinTime, checkoutTime, oneBr, twoBr, threeBr, sixBr, eightBr,basicOneBr, basicTwoBr, basicThreeBr, basicSixBr,basicEightBr} = req.body.hoteldetails
-    const details = await HotelDetails.create({
+    const { fromDate, toDate, priceOneBr,priceTwoBr,priceThreeBr,priceSixBr,priceEightBr } = req.body.details
+
+    const individuals = dateRange(fromDate,toDate, priceOneBr,priceTwoBr,priceThreeBr,priceSixBr,priceEightBr)
+      
+    const details = await HotelPriceDetails.create({
         fromDate,
         toDate,
-        checkinTime,
-        checkoutTime,
-        oneBr,
-        twoBr,
-        threeBr,
-        sixBr,
-        eightBr,
-        basicOneBr,
-        basicTwoBr,
-        basicThreeBr,
-        basicSixBr,
-        basicEightBr,
+        individuals,
         HotelId: hotels.id
     })
-
+    
     res.status(201).json({
         success: true,
         hotels,
@@ -58,36 +52,16 @@ exports.createHotel = catchAsyncErrors (async(req,res,next) => {
 
 })
 
-// for super admin => /api/hotels/admin/update
+// for super admin => /api/hotels/admin/update/:id
 exports.updateHotel = catchAsyncErrors( async(req, res, next) => {
     
     const params = req.params.id
 
-    const newHotelDetails = {
-        fromDate: req.body.fromDate,
-        toDate: req.body.toDate,
-        checkinTime: req.body.checkinTime,
-        checkoutTime: req.body.checkoutTime,
-        oneBr: req.body.oneBr,
-        twoBr: req.body.twoBr,
-        threeBr: req.body.threeBr,
-        sixBr: req.body.sixBr,
-        eightBr: req.body.eightBr,
-        basicOneBr: req.body.oneBr,
-        basicTwoBr: req.body.twoBr,
-        basicThreeBr: req.body.threeBr,
-        basicSixBr: req.body.sixBr,
-        basicEightBr: req.body.eightBr,
-    }
-
-    const hotels = await HotelDetails.findByPk(params)
-    hotels.set(newHotelDetails)
-
-    const result = await hotels.save()
+    const hotels = await Hotels.update(req.body, { where: { id: params } })
 
     res.status(200).json({
         success: true,
-        result
+        hotels
     })
 })
 
@@ -125,60 +99,60 @@ exports.enquiry = catchAsyncErrors( async(req,res,next) => {
     })
 })
 
-// enquery rest details users => /api/hotelsa/enquiry/:id
+// enquery rest details users => /api/hotels/enquiry/:id
 exports.enquiryDetails = catchAsyncErrors( async(req,res,next) => {
     const params = req.params.id
 
-    const { person = 0, oneBr = 0, twoBr = 0, threeBr = 0, sixBr = 0, eightBr = 0, fromDate, toDate } = req.body
+    const { fromDate, toDate, peoples=0, oneBed=0, twoBed=0, threeBed=0, sixBed=0, eightBed=0 } = req.body
 
-    const details = await HotelDetails.findOne({ where: { HotelId: params } })
+    const details = await HotelPriceDetails.findOne({ where: { HotelId: params } })
     const hotels = await Hotels.findByPk(params)
 
     const startDate = new Date(fromDate)
     const endDate = new Date(toDate)
 
-    let diff = 0
-    let diff2 = 0
+    const data = details.individuals.filter((datas) => {
+        return new Date(datas.date) >= startDate && new Date(datas.date) <= endDate
+    })
 
-    let sumPerDay = (oneBr * details.oneBr) + (twoBr * details.twoBr) + (threeBr * details.threeBr) + (sixBr * details.sixBr) + (eightBr * details.eightBr)
-    let basicSumPerDay = (oneBr * details.basicOneBr) + (twoBr * details.basicTwoBr) + (threeBr * details.basicThreeBr) + (sixBr * details.basicSixBr) + (eightBr * details.basicEightBr)
-    let totalSum = 0
-    let amountPerDay = 0
-    // conditiions
-    if(startDate >= details.fromDate && endDate <= details.toDate) {
-        diff = dayDifference(startDate,endDate)
-        totalSum = sumPerDay * diff
-        amountPerDay = totalSum / person
-    } else if(startDate < details.fromDate && endDate <= details.toDate) {
-        diff = dayDifference(startDate, details.fromDate)
-        diff2 = dayDifference(details.fromDate, endDate)
-        let sum1 = basicSumPerDay * diff
-        let sum2 = sumPerDay * diff2
-        totalSum = sum1 + sum2
-        amountPerDay = totalSum / person
-    } else if(startDate >= details.fromDate && endDate > details.toDate ) {
-        diff = dayDifference(startDate, details.toDate)
-        sum1 = sumPerDay * diff
-        diff2 = dayDifference(details.toDate,endDate)
-        sum2 = basicSumPerDay * diff2
-        totalSum = sum1 + sum2
-        amountPerDay = totalSum / person
-    } else if(startDate < details.fromDate && endDate > details.toDate) {
-        diff = dayDifference(startDate, details.fromDate)
-        sum1 = basicSumPerDay * diff
-        diff2 = dayDifference(details.fromDate,details.toDate)
-        sum2 = sumPerDay * diff2
-        let diff3 = dayDifference(details.toDate, endDate)
-        let sum3 = basicSumPerDay * diff3
-        totalSum = sum1 + sum2 + sum3
-        amountPerDay = totalSum / person
-    }
+    const price = data.map((cash) => (
+        (cash.priceOneBedroom * oneBed) + (cash.priceTwoBedroom * twoBed) + (cash.priceThreeBedroom * threeBed) + (cash.priceSixBedroom * sixBed) + (cash.priceEightBedroom * eightBed)
+    ))
+    const sum = price.reduce((acc,val) => acc + val, 0)
+    const amountPerPerson = sum / peoples
 
     res.status(200).json({
         success: true,
         hotels,
         details,
-        sumForEnquiry: totalSum,
-        amountPerPerson: amountPerDay
+        data,
+        price,
+        sumForEnquiry: sum,
+        amountPerPerson
+    })
+})
+
+exports.test = catchAsyncErrors( async(req,res,next) => {
+    const { fromDate, toDate, price, individuals } = req.body
+
+    const result = await HotelPriceDetails.create({
+        fromDate,
+        toDate,
+        price,
+        individuals
+    })
+    res.status(201).json({
+        success: true,
+        result
+    })
+})
+exports.gettest = catchAsyncErrors( async(req,res,next) => {
+    const params = req.params.id
+
+    const result = await HotelPriceDetails.findOne({ where: {id: params} })
+    
+    res.status(201).json({
+        success: true,
+        result
     })
 })

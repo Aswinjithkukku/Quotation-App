@@ -1,11 +1,13 @@
 const express = require("express")
 const router = express.Router()
-const { createHotel, bookHotel, getHotels, updateHotel, searchHotels, enquiry, enquiryDetails } = require("../controllers/hotelControllers")
+const { createHotel, bookHotel, getHotels, updateHotel, searchHotels, enquiry, enquiryDetails, test, gettest, alltest } = require("../controllers/hotelControllers")
 
 // user Routes
 router.route('/search').get(searchHotels)
 router.route('/enquiry').get(enquiry)
 router.route('/enquiry/:id').get(enquiryDetails)
+router.route('/').post(test)
+router.route('/:id').get(gettest)
 
 // superAdminRoutes
 router.route('/admin/all').get(getHotels)

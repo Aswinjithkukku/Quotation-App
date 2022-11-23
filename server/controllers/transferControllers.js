@@ -70,17 +70,7 @@ exports.createTransfers = catchAsyncErrors( async(req,res,next) => {
 })
 // transfer for user => /api/transfers/
 exports.transfer = catchAsyncErrors( async(req,res,next) => {
-    // const { airportIata, placeName } = req.body
 
-    // const airport = await Airports.findOne({ where: { iata: airportIata } }) 
-    // const place = await Place.findOne({ where: { place: placeName } }) 
-
-    // const transfer = await Transfers.findOne({
-    //     where: {
-    //         AirportId: airport.id,
-    //         PlaceId: place.id
-    //     }
-    // })
     const airport = await Airports.findAll() 
     const place = await Place.findAll() 
 
@@ -93,6 +83,7 @@ exports.transfer = catchAsyncErrors( async(req,res,next) => {
 
 // transfer enquiry fpr users => /api/transfer/enquiry
 exports.enquiry =  catchAsyncErrors( async(req,res,next) => {
+    console.log(req.body);
     const { people, airportIata, placeName, transferStatus, returnStatus } = req.body
 
     const airport = await Airports.findOne({ where: { iata: airportIata } }) 
@@ -104,6 +95,7 @@ exports.enquiry =  catchAsyncErrors( async(req,res,next) => {
             PlaceId: place.id
         }
     })
+
     let amount = 0
     // amounts distributed as per number of peoples 
     if(transferStatus === "private") {

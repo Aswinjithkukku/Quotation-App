@@ -5,7 +5,6 @@ const { Users } = require("../models")
 // Check if user is authenticated or not
 exports.isAuthenticatedUser = catchAsyncErrors( async (req,res,next) => {
     const { token } = req.cookies
-    console.log(token);
 
     if(!token) {
         return res.status(401).json('Login first to access this resource')

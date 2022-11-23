@@ -50,17 +50,14 @@ module.exports = (sequelize, DataTypes) => {
             notEmpty: true
         }
     },
-    hotelPriceTableName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
-    },
     })
     Hotels.associate = (models) => {
       Hotels.hasMany(models.HotelBookings);
+      Hotels.hasOne(models.HotelPriceDetails, {
+        onDelete: 'cascade'
+      });
     };
+
 
     return Hotels
   }
