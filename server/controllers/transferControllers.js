@@ -83,7 +83,7 @@ exports.transfer = catchAsyncErrors( async(req,res,next) => {
 
 // transfer enquiry fpr users => /api/transfer/enquiry
 exports.enquiry =  catchAsyncErrors( async(req,res,next) => {
-    console.log(req.body);
+    console.log(req.body.iata);
     const { people, airportIata, placeName, transferStatus, returnStatus } = req.body
 
     const airport = await Airports.findOne({ where: { iata: airportIata } }) 
@@ -125,7 +125,7 @@ exports.transferBooking = catchAsyncErrors( async(req,res,next) => {
     const { peoples, price, place, transferStatus, returnStatus } = req.body
 
     const params = req.params.id
-
+console.log(req);
     const booking = await TransferBookings.create({
         peoples,
         price,
@@ -142,6 +142,10 @@ exports.transferBooking = catchAsyncErrors( async(req,res,next) => {
         ExcursionId: null
     }
 
+    const updateData = {
+        TransferBookingId: booking.id,   
+    }
+
     let { quotationPayload } = req.cookies
     // condition
     if( !quotationPayload ) {
@@ -150,7 +154,8 @@ exports.transferBooking = catchAsyncErrors( async(req,res,next) => {
     } else {
         const { quotationPayload } = req.cookies
         console.log(quotationPayload.id);
-        var quotation = await Quotation.update(data,{ where: { id: quotationPayload.id} } )
+        var quotation = await Quotation.update(updateData,{ where: { id: quotationPayload.id} } )
+        quotation = await Quotation.findByPk(quotationPayload.id)
     }
     // option for cookie
     const options = {

@@ -5,7 +5,7 @@ const { createAirports, allAirports, createTransfers, transfer, enquiry, transfe
 
 // user Routes
 router.route('/').get(isAuthenticatedUser,transfer)
-router.route('/enquiry').get(isAuthenticatedUser,enquiry)
+router.route('/enquiry').get(enquiry)
 router.route('/booking/:id').put(isAuthenticatedUser,transferBooking)
 
 // admin routes

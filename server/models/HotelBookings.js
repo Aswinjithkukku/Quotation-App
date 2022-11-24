@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       hotelName: {
-        type: DataTypes.BOOLEAN,
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: {
           notEmpty: true,

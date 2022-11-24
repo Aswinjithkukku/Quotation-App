@@ -8,7 +8,11 @@ const {
   getPlaces,
   updateCountry,
   updatePlace,
+  getAirports,
 } = require("../controllers/locationControllers");
+
+
+router.route("/airports").get(getAirports);
 
 router
   .route("/admin/country/create")

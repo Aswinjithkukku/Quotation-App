@@ -1,5 +1,5 @@
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
-const { Place, Country } = require("../models")
+const { Place, Country,Airports } = require("../models")
 
 
 // create country  (superAdmin) => /api/location/admin/country/create
@@ -53,6 +53,16 @@ exports.getPlaces = catchAsyncErrors( async(req,res,next) => {
     res.status(200).json({
         success: true,
         places
+    })
+})
+// get all airports  => /api/location/airports
+exports.getAirports = catchAsyncErrors( async(req,res,next) => {
+
+    const airports = await Airports.findAll()
+
+    res.status(200).json({
+        success: true,
+        airports
     })
 })
 
