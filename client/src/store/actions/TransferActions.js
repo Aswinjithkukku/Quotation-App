@@ -41,8 +41,8 @@ export const fetchTransfer = (transferData) => async (dispatch) => {
       },
     };
 
-    const { data } = await axios.get("/api/transfer/enquiry",transferData, config);
-    console.log(data);
+    const { data } = await axios.post("/api/transfer/enquiry",transferData, config);
+    // console.log(data);
 
     dispatch({
       type: TRANSFER_RESULT_SUCCESS,

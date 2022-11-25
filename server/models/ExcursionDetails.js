@@ -7,15 +7,15 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      timeFrom: {
-        type: DataTypes.TIME,
+      dateFrom: {
+        type: DataTypes.DATE,
         allowNull: false,
         validate: {
           notEmpty: true,
         },
       },
-      timeTo: {
-        type: DataTypes.TIME,
+      dateTo: {
+        type: DataTypes.DATE,
         allowNull: false,
         validate: {
           notEmpty: true,

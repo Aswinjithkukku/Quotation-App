@@ -16,7 +16,7 @@ const {
 
 // user Routes
 router.route("/search").get(isAuthenticatedUser, searchHotels);
-router.route("/enquiry").get(isAuthenticatedUser, enquiry);
+router.route("/enquiry").post(enquiry);
 router.route("/enquiry/:id").get(isAuthenticatedUser, enquiryDetails);
 router.route("/booking/:id").put(isAuthenticatedUser, hotelBooking);
 

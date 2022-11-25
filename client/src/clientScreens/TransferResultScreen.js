@@ -6,24 +6,8 @@ import { RiCarWashingLine } from "react-icons/ri";
 import { TbTruckReturn } from "react-icons/tb";
 import { BsCashCoin } from "react-icons/bs";
 
-function TransferResultScreen({people, airportIata, placeName, transferStatus, returnStatus}) {
-  // const dispatch = useDispatch()
+function TransferResultScreen({people, airportIata, placeName, transferStatus, returnStatus, transfer}) {
 
-  // const { loading, error, transfer } = useSelector( state => state.transfer)
-
-  // const transferData = {
-  //   people, airportIata, placeName, transferStatus, returnStatus
-  // }
-
-  // useEffect(() => {
-  //   dispatch(fetchTransfer(transferData))
-  //   if(error){
-  //     dispatch(clearErrors())
-  //   }
-  // }, [dispatch, error])
-
-  // console.log(people, airportIata, placeName, transferStatus, returnStatus);
-  // console.log(transfer);
   return (
     <Fragment>
       <div className="mt-10 p-5 bg-slate-300 text-purple-900">
@@ -34,23 +18,23 @@ function TransferResultScreen({people, airportIata, placeName, transferStatus, r
                 <SlPeople />
               </span>
               <span className="text-lg font-bold ml-2">
-                Number of Peoples :{" "}
+                Number of Peoples : 
               </span>
-              <span className="text-lg font-bold ml-2"> 3</span>
+              <span className="text-lg font-bold ml-2"> {people}</span>
             </div>
             <div className="flex items-center mt-5">
               <span className="text-xl font-bold">
                 <SlPaperPlane />
               </span>
               <span className="text-lg font-bold ml-2">Airport : </span>
-              <span className="text-lg font-bold ml-2"> 3</span>
+              <span className="text-lg font-bold ml-2"> {airportIata}</span>
             </div>
             <div className="flex items-center mt-5">
               <span className="text-xl font-bold">
                 <SlLocationPin />
               </span>
               <span className="text-lg font-bold ml-2">Destination : </span>
-              <span className="text-lg font-bold ml-2"> 3</span>
+              <span className="text-lg font-bold ml-2">{placeName} </span>
             </div>
           </div>
           <div className="second">
@@ -59,21 +43,21 @@ function TransferResultScreen({people, airportIata, placeName, transferStatus, r
                 <RiCarWashingLine />
               </span>
               <span className="text-lg font-bold ml-2">Type of travel : </span>
-              <span className="text-lg font-bold ml-2"> 3</span>
+              <span className="text-lg font-bold ml-2">{transferStatus} </span>
             </div>
             <div className="flex items-center mt-5">
               <span className="text-xl font-bold">
                 <TbTruckReturn />
               </span>
               <span className="text-lg font-bold ml-2">Return Needed : </span>
-              <span className="text-lg font-bold ml-2"> 3</span>
+              <span className="text-lg font-bold ml-2">{returnStatus === true ? "Need return back" : "No need of return"} </span>
             </div>
             <div className="flex items-center mt-5">
               <span className="text-xl font-bold">
                 <BsCashCoin />
               </span>
-              <span className="text-lg font-bold ml-2">Price : </span>
-              <span className="text-lg font-bold ml-2"> 3</span>
+              <span className="text-lg font-bold ml-2">Price(single) : </span>
+              {/* <span className="text-lg font-bold ml-2">{transfer.amountPerPerson}</span> */}
             </div>
           </div>
           <div className="thrid"></div>

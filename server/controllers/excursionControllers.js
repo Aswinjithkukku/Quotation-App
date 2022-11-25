@@ -23,11 +23,11 @@ exports.createExcursion = catchAsyncErrors(async (req, res, next) => {
     CountryId: places.CountryId,
   });
 
-  const { timeFrom, timeTo, price = 0 } = req.body.details;
+  const { dateFrom, dateTo, price = 0 } = req.body.details;
 
   const details = await ExcursionDetails.create({
-    timeFrom,
-    timeTo,
+    dateFrom,
+    dateTo,
     price,
     ExcursionId: excursion.id
   });
@@ -85,15 +85,15 @@ exports.enquiryDetails = catchAsyncErrors(async (req, res, next) => {
 
   const params = req.params.id;
   const { time } = req.body;
+  console.log(time);
    const details = await ExcursionDetails.findAll({
     where: { 
       ExcursionId: params,
     }
   });
   const excursion = await Excursions.findByPk(params);
-  details.filter((item) => {
-  return item.timeFrom < time
-    }
+  const data = details.filter((item) => {
+  return item.timeFrom <= time && item.timeTo >= time     }
   );
 
 //  console.log(data);
@@ -101,6 +101,6 @@ exports.enquiryDetails = catchAsyncErrors(async (req, res, next) => {
     success: true,
     excursion,
     details,
-    // data,
+    data,
   });
 });

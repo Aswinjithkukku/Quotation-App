@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
             notEmpty: true
-        }
+        },
+        defaultValue: 0
     },
     description: {
         type: DataTypes.TEXT,

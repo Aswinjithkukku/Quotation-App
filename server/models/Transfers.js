@@ -7,7 +7,14 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         defaultValue: DataTypes.UUIDV4,
     },
-    transfer: {
+    transferfrom: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
+    },
+    transferTo: {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {

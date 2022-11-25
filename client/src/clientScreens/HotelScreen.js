@@ -1,6 +1,38 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux'
+import { clearErrors, loadAirport, fetchHotels } from '../store/actions/HotelActions'
 
 function HotelScreen() {
+
+  const dispatch = useDispatch()
+  const { loading, airport, error } = useSelector( (state) => state.airport)
+  const { loading: hotelLoading, error: hotelError, hotels } = useSelector( (state) => state.hotels)
+
+  // const [ data, setdata ] = useState([])
+  const [ airports, setAirports ] = useState('')
+  
+  useEffect(() => {
+    dispatch(loadAirport())
+    if (error) {
+      dispatch(clearErrors())
+    }
+    dispatch(fetchHotels(airports))
+  },[dispatch, error, airports])
+
+    // const getHotels = async(airportIata) => {
+    //   const config = {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   };
+  
+    //   const { data } = await axios.post("/api/hotels/enquiry",{airportIata}, config)
+
+    //   setdata(data)
+    // }
+
+
   return (
     <div className="max-w-screen-2xl mx-auto">
       <div className="mt-20  border-2 border-purple-800 py-10 px-5">
@@ -15,9 +47,17 @@ function HotelScreen() {
             <select
               id="airportField"
               className="block p-2 w-full  text-white bg-gray-400  border border-gray-300 sm:text-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter airport"
+              value={airports}
+              onChange={(e) => {
+                setAirports(e.target.value)
+              }}
             >
               <option value="">Choose airport</option>
+          
+              {airport && airport.map((data) => (
+                <option key={data.id} value={data.iata}>{ data.iata} </option>
+              ))}
+
             </select>
           </div>
 
@@ -33,6 +73,13 @@ function HotelScreen() {
               className="block p-2 w-full  text-white bg-gray-400  border border-gray-300 sm:text-sm focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Choose hotels</option>
+              {hotelLoading ? (
+                  <option>Loading.. </option>
+              ) : (
+                hotels && hotels.map((data) => (
+                  <option>{data.name} </option>
+                ))
+              )}
             </select>
           </div>
 

@@ -34,10 +34,14 @@ exports.allAirports = catchAsyncErrors(async(req,res,next) => {
 
 // create transfers table  for superadmin => /api/transfers/admin/create
 exports.createTransfers = catchAsyncErrors( async(req,res,next) => {
-    const { airportIata, placeName, transferName, private, shared } = req.body
+    const { transferfrom, transferTo, private, shared } = req.body
+    // console.log(transferFrom);
+    // console.log(transferTo);
 
-    const airport = await Airports.findOne({ where: { iata: airportIata } }) 
-    const place = await Place.findOne({ where: { place: placeName } }) 
+    const airport = await Airports.findOne({ where: { id: transferfrom } }) 
+    const place = await Place.findOne({ where: { id: transferTo } }) 
+    console.log(airport);
+    console.log(place);
 
     const isExist = await Transfers.findOne({
         where: {
@@ -48,7 +52,8 @@ exports.createTransfers = catchAsyncErrors( async(req,res,next) => {
     // identifying the combination exist or not
     if(!isExist) {
         const transfer = await Transfers.create({
-            transfer: transferName,
+            transferfrom,
+            transferTo,
             private,
             shared,
             AirportId: airport.id,
@@ -80,6 +85,37 @@ exports.transfer = catchAsyncErrors( async(req,res,next) => {
         place
     })
 })
+
+// all transfer =>  api/transfer/admin/all
+exports.allTransfers =  catchAsyncErrors ( async(req,res,next) => {
+
+    const transfers = await Transfers.findAll({ raw: true, nest: true,})
+    
+    const airport = await Airports.findAll({ raw: true, nest: true,}) 
+    const place = await Place.findAll({ raw: true, nest: true,})
+ 
+    for(let i = 0; i < transfers.length; i++) {
+        for(let j= 0; j < airport.length; j++) {
+            if(transfers[i].AirportId === airport[j].id) {
+                transfers[i].airport = airport[j].name
+                break;
+            }
+        }
+        for(let k= 0; k < place.length; k++) {
+            if(transfers[i].PlaceId === place[k].id) {
+                transfers[i].place = place[k].place
+                break;
+            }
+        }
+    }
+    console.log(transfers);
+
+    res.status(200).json({
+        success: true,
+        transfers,
+        // place
+    })
+} )
 
 // transfer enquiry fpr users => /api/transfer/enquiry
 exports.enquiry =  catchAsyncErrors( async(req,res,next) => {

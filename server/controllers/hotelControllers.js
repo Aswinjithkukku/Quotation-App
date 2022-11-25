@@ -141,10 +141,11 @@ exports.searchHotels = catchAsyncErrors(async (req, res, next) => {
 
 // enquiry for users => /api/hotels/enquiry
 exports.enquiry = catchAsyncErrors(async (req, res, next) => {
+  console.log(req.body);
   const { airportIata } = req.body;
 
   const { CountryId } = await Airports.findOne({
-    where: { iata: airportIata },
+    where: { iata: airportIata }
   });
 
   const hotels = await Hotels.findAll({ where: { CountryId: CountryId } });

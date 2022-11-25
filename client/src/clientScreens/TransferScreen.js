@@ -162,6 +162,7 @@ function TransferScreen() {
               placeName={placeName}
               transferStatus={transferStatus}
               returnStatus={returnStatus}
+              // transfer={transfer}
             />
           </div>
         </div>

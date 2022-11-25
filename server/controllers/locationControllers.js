@@ -58,11 +58,11 @@ exports.getPlaces = catchAsyncErrors( async(req,res,next) => {
 // get all airports  => /api/location/airports
 exports.getAirports = catchAsyncErrors( async(req,res,next) => {
 
-    const airports = await Airports.findAll()
+    const airport = await Airports.findAll()
 
     res.status(200).json({
         success: true,
-        airports
+        airport
     })
 })
 
